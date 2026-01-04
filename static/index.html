@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SQLess 指标澄清助手</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="logo">SQLess</div>
+        <nav>
+          <div class="nav-group">
+            <div class="nav-title">指标澄清助手</div>
+            <div class="nav-link active" data-query="核心GMV 趋势 快速洞察" id="nav-chat">问答助手</div>
+            <div class="nav-link" data-query="行业 GMV 看板" id="nav-board">智能看板</div>
+            <div class="nav-link" data-query="GMV 异动与归因" id="nav-insight">自动洞察</div>
+          </div>
+          <div class="nav-group">
+            <div class="nav-title">知识图谱</div>
+            <div class="nav-link">指标路径</div>
+            <div class="nav-link">口径治理</div>
+          </div>
+        </nav>
+      </aside>
+      <main class="content">
+        <header class="top-bar">
+          <div class="tabs">
+            <div class="tab active" id="tab-chat">对话模式</div>
+            <div class="tab" id="tab-form">表单模式</div>
+          </div>
+          <div class="actions">
+            <button class="btn secondary" id="design-btn">设计规范</button>
+            <button class="btn primary" id="new-analysis-btn">新建分析</button>
+          </div>
+        </header>
+        <section class="hero">
+          <div>
+            <h2>你好，要不要看看最近的关键指标？</h2>
+            <p class="subtitle">推荐：GMV 趋势 · 下单转化率 · 平均客单价</p>
+          </div>
+          <div class="hero-actions">
+            <button class="btn pill quick-query" data-query="行业 GMV 趋势（支付口径）">GMV 趋势</button>
+            <button class="btn pill quick-query" data-query="下单转化率 最近30天">下单转化率</button>
+            <button class="btn pill quick-query" data-query="客单价 周趋势">客单价</button>
+          </div>
+        </section>
+        <section class="workspace">
+          <div class="chat-panel">
+            <div class="input-card">
+              <div class="prompt-title">使用澄清卡片快速获取指标</div>
+              <textarea id="query-input" placeholder="例如：穿搭直播业务在过去 7 天的支付 GMV 趋势？"></textarea>
+              <div class="toolbar">
+                <label class="checkbox">
+                  <input type="checkbox" id="expert-route" checked />
+                  <span>低置信度时转专家澄清</span>
+                </label>
+                <button id="start-btn" class="btn primary">生成指标</button>
+              </div>
+            </div>
+            <div class="timeline" id="timeline"></div>
+          </div>
+          <div class="side-panel">
+            <div class="card">
+              <div class="card-header">
+                <span>指标候选</span>
+                <span class="muted" id="confidence">置信度 --</span>
+              </div>
+              <div id="candidate-list" class="candidate-list"></div>
+            </div>
+            <div class="card" id="conflict-card" style="display: none;">
+              <div class="card-header">
+                <span>冲突提醒</span>
+              </div>
+              <div id="conflict-body" class="conflict"></div>
+            </div>
+            <div class="card" id="expert-card" style="display: none;">
+              <div class="card-header">
+                <span>专家协同</span>
+                <span class="badge soft">30s 速批</span>
+              </div>
+              <div class="expert-head">
+                <div class="title" id="expert-title"></div>
+                <div class="muted" id="expert-context"></div>
+                <div class="muted" id="expert-reason"></div>
+              </div>
+              <div class="expert-options" id="expert-options"></div>
+              <div class="expert-actions">
+                <div class="muted">修正槽位（单选/枚举，避免长文本）</div>
+                <div id="expert-revise" class="expert-revise"></div>
+                <button id="expert-revise-btn" class="btn full secondary">都不对，我来修正</button>
+                <div class="muted">转发他人</div>
+                <div class="forward-row">
+                  <input id="expert-forward" type="text" class="input" placeholder="@数据分析师-李四" />
+                  <button id="expert-forward-btn" class="btn">转发</button>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>快速澄清</span></div>
+              <div id="questions" class="questions"></div>
+              <button id="clarify-btn" class="btn full" disabled>提交澄清</button>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>槽位表单</span><span class="muted">可直接编辑</span></div>
+              <div id="slot-form" class="slot-form"></div>
+              <button id="slot-form-btn" class="btn full" disabled>应用表单</button>
+            </div>
+            <div class="card">
+              <div class="card-header"><span>生成 SQL</span></div>
+              <button id="sql-btn" class="btn full" disabled>生成 SQL</button>
+              <pre id="sql-preview" class="sql-preview"></pre>
+            </div>
+            <div class="card" id="confirmation-card">
+              <div class="card-header"><span>口径确认页</span></div>
+              <div id="confirmation" class="confirmation"></div>
+              <div class="confirmation-actions">
+                <button id="confirm-modify" class="btn secondary">修改口径</button>
+                <button id="confirm-exec" class="btn primary" disabled>确认并执行</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
